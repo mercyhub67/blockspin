@@ -363,12 +363,13 @@ local ScreenGui = Instance.new("ScreenGui")
 local ToggleBtn = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
 local UIStroke = Instance.new("UIStroke")
+local Logo = Instance.new("ImageLabel")
 
 ScreenGui.Name = "WindUI_Toggle"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui
 
--- ปุ่ม
+-- ปุ่มหลัก
 ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
 ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -381,10 +382,17 @@ ToggleBtn.Parent = ScreenGui
 UICorner.CornerRadius = UDim.new(0, 10)
 UICorner.Parent = ToggleBtn
 
--- ขอบสีขาว
-UIStroke.Color = Color3.fromRGB(255, 255, 255)
+-- ขอบขาว
+UIStroke.Color = Color3.fromRGB(255,255,255)
 UIStroke.Thickness = 2
 UIStroke.Parent = ToggleBtn
+
+-- โลโก้ตรงกลาง
+Logo.Size = UDim2.new(0.65, 0, 0.65, 0)
+Logo.Position = UDim2.new(0.175, 0, 0.175, 0)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://82904805332931" -- เปลี่ยน ID รูปตรงนี้
+Logo.Parent = ToggleBtn
 
 local opened = true
 
