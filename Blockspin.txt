@@ -109,7 +109,7 @@ local function KeySystem()
     StyleBtn(Get, Color3.fromRGB(231, 76, 60))
 
     Get.MouseButton1Click:Connect(function()
-        setclipboard("https://champgod011-dot.github.io/nevermanxdev/")
+        setclipboard("https://mercyke.netlify.app/")
         game.StarterGui:SetCore("SendNotification", {
             Title = "System",
             Text = "Link copied!",
