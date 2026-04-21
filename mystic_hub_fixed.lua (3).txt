@@ -1543,7 +1543,7 @@ local function setupHighJump(char)
     local humanoid = char:WaitForChild("Humanoid")
     local hrp = char:WaitForChild("HumanoidRootPart")
     humanoid.UseJumpPower = true
-    humanoid.JumpPower = 70
+    humanoid.JumpPower = 60
     if jumpConn_HJ then pcall(function() jumpConn_HJ:Disconnect() end) end
     jumpConn_HJ = game:GetService("UserInputService").JumpRequest:Connect(function()
         if not jumpPowerEnabled then return end
