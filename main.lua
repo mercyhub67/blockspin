@@ -128,93 +128,50 @@ end)
 -- ══════════════════════════════════════════════════════════════
 --  WindUI Window
 -- ══════════════════════════════════════════════════════════════
-local WindUI
-pcall(function()
-    WindUI = loadstring(game:HttpGet(
-        "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"
-    ))()
-end)
-
-if not WindUI then
-    warn("WindUI failed to load")
-    return
-end
-
-local Window = WindUI:CreateWindow({
-    Title = "MERCY HUB  |  Block Spin🔫",
-    Icon = "list",
-    Author = "Block spin | Paid💵",
-    Folder = "mercyhub",
-    Size = UDim2.fromOffset(650, 400),
-    Theme = "Sky",
-    Transparent = true,
-    Resizable = true,
-    KeyCode = Enum.KeyCode.G,
-
-    -- ✅ ต้องอยู่ในนี้
-    OpenButton = {
-        Enabled = false
-    }
-})
-
-Window:Tag({
-    Title = "v1.6.6",
-    Icon = "github",
-    Color = Color3.fromHex("#30ff6a"),
-    Radius = 0,
-})
-
-Window:SetBackgroundTransparency(0.25)
-Window:SetBackgroundImageTransparency(0.25)
-
--- Config (กันพังถ้าไม่มี)
-local ConfigManager = Window.ConfigManager
-local Config
-if ConfigManager then
-    Config = ConfigManager:CreateConfig("CathubConfig")
-end
-
--- ===== ปุ่มลอยเปิด/ปิด UI =====
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local gui = Instance.new("ScreenGui")
-gui.Name = "NM_Toggle"
-gui.Parent = game.CoreGui
-
-local ICON_ID = "rbxassetid://72830195117719"
-
-local btn = Instance.new("ImageButton")
-btn.Parent = gui
-btn.Size = UDim2.fromOffset(42,42)
-btn.Position = UDim2.fromOffset(40,220)
-btn.BackgroundColor3 = Color3.fromRGB(20,20,20)
-btn.Image = ICON_ID
-btn.ScaleType = Enum.ScaleType.Fit
-btn.AutoButtonColor = false
-btn.Active = true
-btn.Draggable = true
-btn.AnchorPoint = Vector2.new(0.5,0.5)
-
-Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
-
-local stroke = Instance.new("UIStroke", btn)
-stroke.Thickness = 1
-stroke.Color = Color3.fromRGB(180,180,180)
-
-local pad = Instance.new("UIPadding", btn)
-pad.PaddingTop = UDim.new(0,6)
-pad.PaddingBottom = UDim.new(0,6)
-pad.PaddingLeft = UDim.new(0,6)
-pad.PaddingRight = UDim.new(0,6)
-
-btn.MouseButton1Click:Connect(function()
-    if Window.Toggle then
-        Window:Toggle()
-    elseif Window.SetVisible then
-        Window:SetVisible(false)
-    end
-end)
+local WindUI  
+pcall(function()  
+    WindUI = loadstring(game:HttpGet(  
+        "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"  
+    ))()  
+end)  
+  
+local Window  
+if WindUI then  
+    Window = WindUI:CreateWindow({  
+        Title      = "MERCY HUB  |  Block Spin🔫",  
+        Icon       = "list",  
+        Author     = "Block spin | Paid💵",  
+        Folder     = "mercyhub",  
+        Size       = UDim2.fromOffset(650, 400),  
+        Theme      = "Sky",  
+        Transparent = true,  
+        Resizable  = true,  
+        KeyCode    = Enum.KeyCode.G,  
+    })  
+  
+    Window:Tag({  
+        Title  = "v5.6",  
+        Color  = Color3.fromHex("#30ff6a"),  
+        Radius = 12,  
+    })  
+else  
+    -- Fallback stub so the rest of the script doesn't error  
+    Window = {  
+        Tab = function()  
+            return {  
+                Section  = function() end,  
+                Toggle   = function() end,  
+                Slider   = function() end,  
+                Button   = function() end,  
+                Input    = function() return {} end,  
+                Divider  = function() end,  
+            }  
+        end,  
+    }  
+end  
+  
+local ConfigManager = Window.ConfigManager  
+local Config        = ConfigManager:CreateConfig("CathubConfig")  
 
 -- ══════════════════════════════════════════════════════════════
 --  Utility Functions
