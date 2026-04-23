@@ -329,40 +329,42 @@ local function calculateVelocity(player)
     return avg
 end
 
-local function getSmartHeadPosition(target)
-    if not target or not target.Character then
-        return nil
-    end
-
-    local root = target.Character:FindFirstChild("HumanoidRootPart")
-    local head = target.Character:FindFirstChild("Head")
-
-    if not root then
-        return nil
+local function predictPosition(part, root)
+    if not part or not root then
+        return part and part.Position or Vector3.zero
     end
 
     local velocity = root.Velocity
     local ping = getPing()
 
-    if ping < 0.08 then
-        ping = 0.08
-    elseif ping > 0.22 then
-        ping = 0.22
+    if ping < 0.07 then
+        ping = 0.07
+    elseif ping > 0.25 then
+        ping = 0.25
     end
 
-    local predictedRoot = root.Position + (velocity * ping * 1.15)
+    local horizontalPrediction = Vector3.new(
+        velocity.X,
+        0,
+        velocity.Z
+    ) * ping * 1.22
 
-    local headOffset = Vector3.new(0, 1.35, 0)
+    local verticalPrediction = Vector3.new(
+        0,
+        math.clamp(velocity.Y * ping * 0.28, -4, 4),
+        0
+    )
 
-    if head then
-        headOffset = head.Position - root.Position
-    end
+    local jumpBoost = Vector3.new(
+        0,
+        velocity.Y > 15 and 0.6 or 0,
+        0
+    )
 
-    if velocity.Y > 15 then
-        predictedRoot = predictedRoot + Vector3.new(0, 0.6, 0)
-    end
-
-    return predictedRoot + headOffset
+    return part.Position
+        + horizontalPrediction
+        + verticalPrediction
+        + jumpBoost
 end
 
 local function isBehindWall(origin, target)
