@@ -337,34 +337,43 @@ local function predictPosition(part, root)
     local velocity = root.Velocity
     local ping = getPing()
 
-    if ping < 0.07 then
-        ping = 0.07
-    elseif ping > 0.25 then
-        ping = 0.25
+    if ping < 0.06 then
+        ping = 0.06
+    elseif ping > 0.18 then
+        ping = 0.18
     end
 
     local horizontalPrediction = Vector3.new(
         velocity.X,
         0,
         velocity.Z
-    ) * ping * 1.22
+    ) * ping * 0.95
 
     local verticalPrediction = Vector3.new(
         0,
-        math.clamp(velocity.Y * ping * 0.28, -4, 4),
+        math.clamp(velocity.Y * ping * 0.18, -2, 2),
         0
     )
 
     local jumpBoost = Vector3.new(
         0,
-        velocity.Y > 15 and 0.6 or 0,
+        velocity.Y > 15 and 0.2 or 0,
         0
     )
 
     local headOffset = Vector3.new(0, 0, 0)
 
-    if part.Name == "Head" and root then
-        headOffset = Vector3.new(0, 0.15, 0)
+    if part.Name == "Head" then
+        local speed = root.Velocity.Magnitude
+        local distance = (part.Position - root.Position).Magnitude
+
+        if speed > 22 or distance > 2.5 then
+            -- anti aim / desync / วิ่งแรง
+            headOffset = Vector3.new(0, 0.12, 0)
+        else
+            -- คนปกติ
+            headOffset = Vector3.new(0, 0.03, 0)
+        end
     end
 
     return part.Position
