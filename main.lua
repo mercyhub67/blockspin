@@ -330,20 +330,18 @@ local function calculateVelocity(player)
 end
 
 local function predictPosition(part, root)
-    if not part or not root then
-        return part and part.Position or Vector3.zero
-    end
+    if not part then return Vector3.zero end
 
-    local velocity = root.Velocity
+    local parentModel = part.Parent
+    local player = parentModel and Players:GetPlayerFromCharacter(parentModel)
+
+    -- ใช้ history-based velocity แทน root.Velocity
+    local velocity = (player and calculateVelocity(player)) or Vector3.zero
+
     local ping = getPing()
+    ping = math.clamp(ping, 0.07, 0.22)
 
-    if ping < 0.07 then
-        ping = 0.07
-    elseif ping > 0.22 then
-        ping = 0.22
-    end
-
-    local speed = velocity.Magnitude
+    local speed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
     local multiplier = 1.15
 
     if speed > 50 then
@@ -355,9 +353,7 @@ local function predictPosition(part, root)
     end
 
     local horizontalPrediction = Vector3.new(
-        velocity.X,
-        0,
-        velocity.Z
+        velocity.X, 0, velocity.Z
     ) * ping * multiplier
 
     local verticalPrediction = Vector3.new(
@@ -373,13 +369,8 @@ local function predictPosition(part, root)
     )
 
     local headOffset = Vector3.new(0, 0, 0)
-
     if part.Name == "Head" then
-        if speed > 22 then
-            headOffset = Vector3.new(0, 0.10, 0)
-        else
-            headOffset = Vector3.new(0, 0.05, 0)
-        end
+        headOffset = Vector3.new(0, speed > 22 and 0.10 or 0.05, 0)
     end
 
     return part.Position
@@ -437,13 +428,13 @@ end
 -- ══════════════════════════════════════════════════════════════
 if not isMobile then
     fovCircle             = Drawing.new("Circle")
-    fovCircle.Color       = Color3.fromRGB(255, 255, 255)
-    fovCircle.Thickness   = 1.4
-    fovCircle.NumSides    = 64
-    fovCircle.Filled      = false
-    fovCircle.Transparency = 3
-    fovCircle.Radius      = fovRadius
-    fovCircle.Visible     = false
+fovCircle.Color       = Color3.fromRGB(255, 255, 255)
+fovCircle.Thickness   = 1.4
+fovCircle.NumSides    = 64
+fovCircle.Filled      = false
+fovCircle.Transparency = 1
+fovCircle.Radius      = fovRadius
+fovCircle.Visible     = false
 else
     local fovGui = Instance.new("ScreenGui")
     fovGui.Name   = "MobileFOV"
