@@ -1828,7 +1828,9 @@ local FriendDropdown = CombatTab:Dropdown({
     Callback = function(v)
         excludedPlayers = {}
         for name, selected in pairs(v) do
-            if selected then table.insert(excludedPlayers, name) end
+            if not selected then
+                table.insert(excludedPlayers, name)
+            end
         end
         for _, player in pairs(Players:GetPlayers()) do
             if espData[player] and espData[player].drawings then
