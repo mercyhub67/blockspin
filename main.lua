@@ -334,54 +334,60 @@ local function predictPosition(part, root)
 
     local parentModel = part.Parent
     local player = parentModel and Players:GetPlayerFromCharacter(parentModel)
-
     local velocity = (player and calculateVelocity(player)) or Vector3.zero
 
-    local ping = getPing()
-    ping = math.clamp(ping, 0.07, 0.22)
+    local ping = math.clamp(getPing(), 0.06, 0.20)
 
-    local speed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
-    local distance = (part.Position - Camera.CFrame.Position).Magnitude
-    local leadTime = ping + (distance / 320)
+    -- speed แนวนอนเท่านั้น (แม่นกว่า magnitude รวม Y)
+    local hSpeed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
 
-    local multiplier = 1.15
-
-    if speed > 50 then
-        multiplier = 1.35
-    elseif speed > 35 then
-        multiplier = 1.28
-    elseif speed > 20 then
-        multiplier = 1.20
+    -- multiplier ละเอียดขึ้น + ชดเชยการเปลี่ยนทิศ
+    local multiplier
+    if     hSpeed > 60 then multiplier = 1.50
+    elseif hSpeed > 50 then multiplier = 1.42
+    elseif hSpeed > 35 then multiplier = 1.32
+    elseif hSpeed > 20 then multiplier = 1.22
+    elseif hSpeed > 10 then multiplier = 1.15
+    else                     multiplier = 1.05
     end
 
-    local horizontalPrediction = Vector3.new(
-        velocity.X, 0, velocity.Z
-    ) * leadTime * multiplier
+    -- ถ้า ping สูง ลด multiplier นิดหน่อยเพื่อไม่ over-predict
+    if ping > 0.15 then
+        multiplier = multiplier * 0.93
+    end
 
-    local verticalPrediction = Vector3.new(
+    local horizontal = Vector3.new(velocity.X, 0, velocity.Z) * ping * multiplier
+
+    -- vertical คมขึ้น: เพิ่ม coefficient จาก 0.22 → 0.30
+    local vertical = Vector3.new(
         0,
-        math.clamp(velocity.Y * leadTime * 0.22, -3, 3),
+        math.clamp(velocity.Y * ping * 0.30, -4, 4),
         0
     )
 
+    -- jump boost ละเอียดขึ้น
     local jumpBoost = Vector3.new(
         0,
-        velocity.Y > 15 and 0.35 or 0,
+        velocity.Y > 20 and 0.50
+        or velocity.Y > 15 and 0.35
+        or 0,
         0
     )
 
-    local headOffset = Vector3.new(0, 0, 0)
+    local headOffset = Vector3.zero
     if part.Name == "Head" then
         headOffset = Vector3.new(
             0,
-            speed > 22 and 0.10 or 0.05,
+            hSpeed > 30 and 0.14
+            or hSpeed > 22 and 0.10
+            or 0.05,
             0
         )
     end
 
     return part.Position
-        + horizontalPrediction
-        + verticalPrediction
+        + horizontal
+        + vertical
         + jumpBoost
         + headOffset
 end
