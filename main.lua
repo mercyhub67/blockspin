@@ -2273,7 +2273,7 @@ Config:Register("SnapUnderMap", SnapToggle)
 local SnapSlider = CharTab:Slider({
     Title = "Snap:",
     Step  = 1,
-    Value = { Min = 1, Max = 50, Default = 10 },
+    Value = { Min = 1, Max = 1000, Default = 10 },
     Callback = function(v)
         snapDepth = v
         if snapActive and HRP and snapY then
