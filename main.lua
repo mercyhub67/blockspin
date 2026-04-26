@@ -1,62 +1,96 @@
 local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
 
-local WebhookURL = "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF"
+-- รองรับหลาย executor
+local request = request or http_request or (syn and syn.request)
 
-local Player = game.Players.LocalPlayer
-local JobId = game.JobId
-local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
+if not request then
+    warn("Executor ไม่รองรับ HTTP Request")
+    return
+end
+
+local WebhookURL = "https://discord.com/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF"
+
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local Executor = "Unknown"
+pcall(function()
+    if identifyexecutor then
+        Executor = identifyexecutor()
+    end
+end)
+
+local JobId = game.JobId or "Unknown"
+
+-- ตรวจ device แบบง่าย
+local Device = "PC 💻"
+pcall(function()
+    if UserInputService.TouchEnabled then
+        Device = "Mobile 📱"
+    end
+end)
 
 local Data = {
-    ["embeds"] = {{
-        ["title"] = "**BlockSpin Notification** 🚀",
-        ["description"] = "มีคนรันสคริปต์ของคุณแล้ว!",
-        ["color"] = 3066993,
-        ["fields"] = {
+    embeds = {{
+        title = "BlockSpin Notification 🚀",
+        description = "มีคนรันสคริปต์ของคุณแล้ว",
+        color = 3066993,
+
+        fields = {
             {
-                ["name"] = "🌟 คนใช้",
-                ["value"] = "```" .. Player.Name .. " (" .. Player.UserId .. ")```",
-                ["inline"] = false
+                name = "🌟 คนใช้",
+                value = "```" .. Player.Name .. " (" .. Player.UserId .. ")```",
+                inline = false
             },
             {
-                ["name"] = "📱 อุปกรณ์",
-                ["value"] = "Android 🤖",
-                ["inline"] = true
+                name = "📱 อุปกรณ์",
+                value = Device,
+                inline = true
             },
             {
-                ["name"] = "📛 Executor",
-                ["value"] = "```" .. Executor .. "```",
-                ["inline"] = true
+                name = "📛 Executor",
+                value = "```" .. Executor .. "```",
+                inline = true
             },
             {
-                ["name"] = "🌍 แมพ",
-                ["value"] = "BlockSpin 🔪",
-                ["inline"] = false
+                name = "🌍 เกม",
+                value = "BlockSpin 🔪",
+                inline = false
             },
             {
-                ["name"] = "🆔 JobId",
-                ["value"] = "```" .. JobId .. "```",
-                ["inline"] = false
+                name = "🆔 JobId",
+                value = "```" .. JobId .. "```",
+                inline = false
             },
             {
-                ["name"] = "🕒 เวลา",
-                ["value"] = os.date("%d-%m-%Y %H:%M:%S"),
-                ["inline"] = false
+                name = "🕒 เวลา",
+                value = os.date("%d-%m-%Y %H:%M:%S"),
+                inline = false
             }
         },
-        ["thumbnail"] = {
-            ["url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. Player.UserId .. "&width=420&height=420&format=png"
+
+        thumbnail = {
+            url = "https://www.roblox.com/headshot-thumbnail/image?userId="
+                .. Player.UserId ..
+                "&width=420&height=420&format=png"
         },
-        ["footer"] = {
-            ["text"] = "Script Logger System"
+
+        footer = {
+            text = "Script Logger System"
         }
     }}
 }
 
-local Headers = {["Content-Type"] = "application/json"}
-local Encoded = HttpService:JSONEncode(Data)
-
 pcall(function()
-    HttpService:PostAsync(WebhookURL, Encoded)
+    request({
+        Url = WebhookURL,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode(Data)
+    })
 end)
 
 -- ============================================================
