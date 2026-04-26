@@ -15,30 +15,33 @@ local ContextActionService = game:GetService("ContextActionService")
 
 local HttpService = game:GetService("HttpService")
 
-pcall(function()
-    local Player = game.Players.LocalPlayer
-    local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
-    local Data = {
-        ["embeds"] = {{
-            ["title"] = "BlockSpin Notification 🚀",
-            ["description"] = "มีคนรันสคริปต์ของคุณแล้ว!",
-            ["color"] = 3066993,
-            ["fields"] = {
-                {["name"] = "🌟 คนใช้", ["value"] = "```" .. Player.Name .. " (" .. Player.UserId .. ")```", ["inline"] = false},
-                {["name"] = "📱 อุปกรณ์", ["value"] = "Android 🤖", ["inline"] = true},
-                {["name"] = "📛 Executor", ["value"] = "```" .. Executor .. "```", ["inline"] = true},
-                {["name"] = "🌍 แมพ", ["value"] = "BlockSpin 🔪", ["inline"] = false},
-                {["name"] = "🆔 JobId", ["value"] = "```" .. game.JobId .. "```", ["inline"] = false},
-                {["name"] = "🕒 เวลา", ["value"] = os.date("%d-%m-%Y %H:%M:%S"), ["inline"] = false}
-            },
-            ["thumbnail"] = {["url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. Player.UserId .. "&width=420&height=420&format=png"},
-            ["footer"] = {["text"] = "Script Logger System"}
-        }}
-    }
-    HttpService:PostAsync(
-        "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF",
-        HttpService:JSONEncode(Data)
-    )
+task.spawn(function()
+    pcall(function()
+        local Player = game.Players.LocalPlayer
+        local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
+        local Data = {
+            ["embeds"] = {{
+                ["title"] = "BlockSpin Notification 🚀",
+                ["description"] = "มีคนรันสคริปต์ของคุณแล้ว!",
+                ["color"] = 3066993,
+                ["fields"] = {
+                    {["name"] = "🌟 คนใช้", ["value"] = "```" .. Player.Name .. " (" .. Player.UserId .. ")```", ["inline"] = false},
+                    {["name"] = "📱 อุปกรณ์", ["value"] = "Android 🤖", ["inline"] = true},
+                    {["name"] = "📛 Executor", ["value"] = "```" .. Executor .. "```", ["inline"] = true},
+                    {["name"] = "🌍 แมพ", ["value"] = "BlockSpin 🔪", ["inline"] = false},
+                    {["name"] = "🆔 JobId", ["value"] = "```" .. tostring(game.JobId) .. "```", ["inline"] = false},
+                    {["name"] = "🕒 เวลา", ["value"] = tostring(os.date("%d-%m-%Y %H:%M:%S")), ["inline"] = false}
+                },
+                ["thumbnail"] = {["url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. Player.UserId .. "&width=420&height=420&format=png"},
+                ["footer"] = {["text"] = "Script Logger System"}
+            }}
+        }
+        HttpService:PostAsync(
+            "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF",
+            HttpService:JSONEncode(Data),
+            Enum.HttpContentType.ApplicationJson
+        )
+    end)
 end)
 
 -- ── Remotes / Modules ────────────────────────────────────────
