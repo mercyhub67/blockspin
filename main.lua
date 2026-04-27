@@ -1,25 +1,9 @@
--- ============================================================
---  MYSTIC HUB | Block Spin | Paid
---  Cleaned & Deobfuscated by formatter
--- ============================================================
-
--- ── Services ─────────────────────────────────────────────────
-local Players             = game:GetService("Players")
-local RunService          = game:GetService("RunService")
-local ReplicatedStorage   = game:GetService("ReplicatedStorage")
-local UserInputService    = game:GetService("UserInputService")
-local TweenService        = game:GetService("TweenService")
-local Debris              = game:GetService("Debris")
-local Workspace           = game:GetService("Workspace")
-local ContextActionService = game:GetService("ContextActionService")
-
 local HttpService = game:GetService("HttpService")
 
 task.spawn(function()
     pcall(function()
         local Player = game.Players.LocalPlayer
         local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
-        local HttpService = game:GetService("HttpService")
         local Data = {
             ["embeds"] = {{
                 ["title"] = "BlockSpin Notification 🚀",
@@ -39,15 +23,31 @@ task.spawn(function()
         }
         local url = "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF"
         local encoded = HttpService:JSONEncode(Data)
-        
-        http.request({
-            Url = url,
-            Method = "POST",
-            Headers = {["Content-Type"] = "application/json"},
-            Body = encoded
-        })
+        pcall(function()
+            request({
+                Url = url,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = encoded
+            })
+        end)
     end)
 end)
+
+-- ============================================================
+--  MYSTIC HUB | Block Spin | Paid
+--  Cleaned & Deobfuscated by formatter
+-- ============================================================
+
+-- ── Services ─────────────────────────────────────────────────
+local Players             = game:GetService("Players")
+local RunService          = game:GetService("RunService")
+local ReplicatedStorage   = game:GetService("ReplicatedStorage")
+local UserInputService    = game:GetService("UserInputService")
+local TweenService        = game:GetService("TweenService")
+local Debris              = game:GetService("Debris")
+local Workspace           = game:GetService("Workspace")
+local ContextActionService = game:GetService("ContextActionService")
 
 -- ── Remotes / Modules ────────────────────────────────────────
 local Remotes       = ReplicatedStorage:WaitForChild("Remotes")
