@@ -670,10 +670,13 @@ RunService.RenderStepped:Connect(function()
                 fovCircle.Position = UDim2.fromScale(0.5, 0.5)
                 fovCircle.Size     = UDim2.fromOffset(fovRadius * 2, fovRadius * 2)
             else
-                fovCircle.Visible = silentAimEnabled
-                if silentAimEnabled then
-                    fovCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-                    fovCircle.Radius   = fovRadius
+                local Center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                for i = 1, fovCircle._segments do
+                    local angle1 = math.rad((i - 1) * (360 / fovCircle._segments))
+                    local angle2 = math.rad(i * (360 / fovCircle._segments))
+                    fovCircle._lines[i].From = Center + Vector2.new(math.cos(angle1) * fovRadius, math.sin(angle1) * fovRadius)
+                    fovCircle._lines[i].To   = Center + Vector2.new(math.cos(angle2) * fovRadius, math.sin(angle2) * fovRadius)
+                    fovCircle._lines[i].Visible = silentAimEnabled
                 end
             end
 				end
