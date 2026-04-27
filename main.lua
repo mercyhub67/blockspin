@@ -174,9 +174,6 @@ local getEnv = getgenv or function() return _G end
 
 getEnv().Sky        = false
 getEnv().SkyAmount  = 1500
-getEnv().FireRateValue = 1
-getEnv().AccuracyValue = 0
-getEnv().RecoilValue   = 0
 
 -- ── Rarity Colors ────────────────────────────────────────────
 local RarityColors = {
