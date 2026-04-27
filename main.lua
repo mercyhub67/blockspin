@@ -19,6 +19,7 @@ task.spawn(function()
     pcall(function()
         local Player = game.Players.LocalPlayer
         local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
+        local HttpService = game:GetService("HttpService")
         local Data = {
             ["embeds"] = {{
                 ["title"] = "BlockSpin Notification 🚀",
@@ -36,11 +37,15 @@ task.spawn(function()
                 ["footer"] = {["text"] = "Script Logger System"}
             }}
         }
-        HttpService:PostAsync(
-            "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF",
-            HttpService:JSONEncode(Data),
-            Enum.HttpContentType.ApplicationJson
-        )
+        local url = "https://hooks.hyra.io/api/webhooks/1498103742283776141/g9JWK34VWTaMhUKXdVYfDdb6CSgwnCu6BCCik_6x5dNp0inrnpP-GZFWIXAWUKdP8faF"
+        local encoded = HttpService:JSONEncode(Data)
+        
+        http.request({
+            Url = url,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = encoded
+        })
     end)
 end)
 
