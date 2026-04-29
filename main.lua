@@ -452,7 +452,7 @@ end
 local HISTORY_SIZE    = 10   -- เพิ่ม history ให้ velocity แม่นขึ้นตอนซิกแซก
 local VELOCITY_SCALE  = 1.25 -- ลดการดักล่วงหน้าลงนิดหน่อย
 local MAX_JUMP_VEL    = 150
-local SMOOTH_MULT     = 0.75
+local SMOOTH_MULT     = 1
 
 RunService.Heartbeat:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
