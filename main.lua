@@ -1,8 +1,6 @@
 -- ── Services ─────────────────────────────────────────────────
 local Players             = game:GetService("Players")
 -- ── Splash Screen UI ─────────────────────────────────────────
-local Net = require(ReplicatedStorage.Modules.Core.Net)
-
 do
     local FONT = Enum.Font.GothamBold
     local screenGui = Instance.new("ScreenGui")
@@ -90,6 +88,7 @@ do
     godBtn.MouseButton1Click:Connect(function()
         destroyUI()
         task.spawn(function()
+			local Net = require(ReplicatedStorage.Modules.Core.Net)
             if not _G.Bypass then
                 local func = getupvalue(Net.get, 2)
                 if func then
