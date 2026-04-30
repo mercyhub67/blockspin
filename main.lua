@@ -2238,6 +2238,88 @@ Config:Register("SnapHeight", SnapSlider)
 local PlayerTab = Window:Tab({ Title = "PLAYER:", Icon = "person-standing" })
 PlayerTab:Section({ Title = "PLAYER:" })
 
+-- ====================================
+-- แทนที่ส่วน "ดึงผู้เล่น" ใน PlayerTab ด้วยโค้ดนี้
+-- ====================================
+
+Tab_player:Divider()
+Tab_player:Section({Title = "ดึงผู้เล่น (Bring)"})
+
+-- ตัวแปรเก็บชื่อผู้เล่นที่เลือก
+local selectedBringPlayer = ""
+
+-- ฟังก์ชันอัปเดตรายชื่อผู้เล่น (ไม่รวมตัวเอง)
+local function getPlayerList()
+    local names = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
+        end
+    end
+    return names
+end
+
+-- Dropdown เลือกผู้เล่น
+local bringDropdown = PlayerTab:Dropdown({
+    Title = "เลือกผู้เล่น",
+    Values = getPlayerList(),
+    Value = nil,
+    Multi = false,
+    Callback = function(selected)
+        if type(selected) == "string" then
+            selectedBringPlayer = selected
+            bringNameInput = selected  --- อัปเดตตัวแปรเดิมที่ toggleBringPlayer ใช้
+        end
+    end
+})
+
+-- ปุ่มรีเฟรชรายชื่อ
+PlayerTab:Button({
+    Title = "รีเฟรชรายชื่อ",
+    Callback = function()
+        bringDropdown:Refresh(getPlayerList(), true)
+        game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Bring", Text = "อัปเดตรายชื่อเรียบร้อย", Duration = 1})
+    end
+})
+
+-- อัปเดต dropdown อัตโนมัติเมื่อมีผู้เล่นเข้า/ออก
+local function updateBringDropdown()
+    pcall(function() bringDropdown:Refresh(getPlayerList(), true) end)
+end
+Players.PlayerAdded:Connect(updateBringDropdown)
+Players.PlayerRemoving:Connect(updateBringDropdown)
+
+-- Toggle สำหรับเปิด/ปิด Bring (ใช้ toggleBringPlayer ที่มีอยู่แล้ว)
+local bringToggle = Tab_player:Toggle({
+    Title = "Bring Player",
+    Desc = "ดึงผู้เล่นที่เลือกมาหาคุณตลอด (เปิดค้างไว้)",
+    Value = false,
+    Callback = function(state)
+        if state then
+            if selectedBringPlayer == "" then
+                game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Bring", Text = "กรุณาเลือกผู้เล่นก่อน", Duration = 2})
+                bringToggle:Set(false)
+                return
+            end
+            toggleBringPlayer(selectedBringPlayer, true)
+        else
+            toggleBringPlayer(selectedBringPlayer, false)
+        end
+    end
+})
+
+-- หากผู้เล่นที่ถูกดึงออกจากเกม ให้ปิด toggle อัตโนมัติ
+local function onBringTargetLeft(player)
+    if BringActive and selectedBringPlayer == player.Name then
+        bringToggle:Set(false)
+        toggleBringPlayer(selectedBringPlayer, false)
+        game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Bring", Text = "ผู้เล่นออกจากเกม หยุดดึง", Duration = 2})
+    end
+end
+Players.PlayerRemoving:Connect(onBringTargetLeft)
+
+
+
 local AutoFinishToggle = PlayerTab:Toggle({
     Title   = "Auto Finish",
     Default = false,
