@@ -2242,8 +2242,8 @@ PlayerTab:Section({ Title = "PLAYER:" })
 -- แทนที่ส่วน "ดึงผู้เล่น" ใน PlayerTab ด้วยโค้ดนี้
 -- ====================================
 
-Tab_player:Divider()
-Tab_player:Section({Title = "ดึงผู้เล่น (Bring)"})
+PlayerTab:Divider()
+PlayerTab:Section({Title = "ดึงผู้เล่น (Bring)"})
 
 -- ตัวแปรเก็บชื่อผู้เล่นที่เลือก
 local selectedBringPlayer = ""
